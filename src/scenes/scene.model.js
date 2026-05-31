@@ -19,4 +19,4 @@ const escenaSchema = new Schema({
     versionKey: false
 });
 
-export default model('Escena', escenaSchema);
+export default model('Scene', escenaSchema);

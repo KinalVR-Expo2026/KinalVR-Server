@@ -11,7 +11,7 @@ const eventSchema = new Schema({
     },
     idEscenario: {
         type: Schema.Types.ObjectId,
-        ref: 'Escena',
+        ref: 'Escenario',
         required: [true, 'El ID del escenario asociado es obligatorio']
     }
 }, {

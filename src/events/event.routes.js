@@ -12,12 +12,6 @@ import { createEventValidator, updateEventValidator } from "../../middlewares/ev
 
 const router = Router();
 
-/**
- * @swagger
- * /events:
- *   post:
- *     summary: Crear un nuevo evento asociado a un escenario
- */
 router.post(
     "/",
     uploadFieldImage.single("imagen"),
@@ -25,36 +19,21 @@ router.post(
     saveEvent
 );
 
-/**
- * @swagger
- * /events:
- *   get:
- *     summary: Obtener todos los eventos
- */
-router.get("/", getEvents);
+router.get(
+    "/",
+    getEvents
+);
 
-/**
- * @swagger
- * /events/{id}:
- *   get:
- *     summary: Obtener un evento por ID
- */
-router.get("/:id", getEventById);
+router.get(
+    "/:id",
+    getEventById
+);
 
-/**
- * @swagger
- * /events/escenario/{idEscenario}:
- *   get:
- *     summary: Obtener eventos por ID de escenario
- */
-router.get("/escenario/:idEscenario", getEventsByEscenario);
+router.get(
+    "/:idEscenario", 
+    getEventsByEscenario
+);
 
-/**
- * @swagger
- * /events/{id}:
- *   put:
- *     summary: Actualizar un evento existente
- */
 router.put(
     "/:id",
     uploadFieldImage.single("imagen"),
@@ -62,12 +41,9 @@ router.put(
     updateEvent
 );
 
-/**
- * @swagger
- * /events/{id}:
- *   delete:
- *     summary: Eliminar un evento
- */
-router.delete("/:id", deleteEvent);
+router.delete(
+    "/:id",
+    deleteEvent
+);
 
 export default router;
