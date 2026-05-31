@@ -1,14 +1,38 @@
-import { check } from "express-validator";
+import { body } from "express-validator";
 import { checkValidators } from "./checkValidators.js";
 
 export const createEventValidator = [
-    check("descripcion", "La descripción es obligatoria").not().isEmpty(),
-    check("idEscenario", "El idEscenario debe ser un ID de MongoDB válido").isMongoId(),
+    body('urlImagen')
+        .custom((value, { req }) => {
+            if (!req.file) {
+                throw new Error('La imagen del evento es obligatoria');
+            }
+            return true;
+        }),
+    body('descripcion')
+        .notEmpty()
+        .withMessage('La descripción es obligatoria'),
+    body('idEscenario')
+        .notEmpty()
+        .withMessage('El idEscenario es obligatorio')
+        .isMongoId()
+        .withMessage('El idEscenario debe ser un ID de MongoDB válido'),
     checkValidators
 ];
 
 export const updateEventValidator = [
-    check("descripcion", "La descripción no puede estar vacía").optional().not().isEmpty(),
-    check("idEscenario", "El idEscenario debe ser un ID de MongoDB válido").optional().isMongoId(),
+    body('urlImagen')
+        .optional()
+        .custom((value, { req }) => {
+            return true; 
+        }),
+    body('descripcion')
+        .optional()
+        .notEmpty()
+        .withMessage('La descripción es obligatoria'),
+    body('idEscenario')
+        .optional()
+        .isMongoId()
+        .withMessage('El idEscenario debe ser un ID de MongoDB válido'),
     checkValidators
 ];

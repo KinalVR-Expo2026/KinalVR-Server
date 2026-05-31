@@ -8,7 +8,7 @@ import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
-import escenaRoutes from '../src/scenes/escene.routes.js';
+import sceneRoutes from '../src/scenes/scene.routes.js';
 import eventRoutes from '../src/events/event.routes.js';
 import { parseMultipart } from '../middlewares/file-uploader.js';
 
@@ -44,7 +44,7 @@ const routes = (app) => {
         })
     })
 
-    app.use(`${BASE_PATH}/scenes`, escenaRoutes);
+    app.use(`${BASE_PATH}/scenes`, sceneRoutes);
     app.use(`${BASE_PATH}/events`, eventRoutes);
 
     app.use((req, res) => {

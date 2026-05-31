@@ -1,5 +1,5 @@
 import Event from "./event.model.js";
-import Escena from "../scenes/escene.model.js";
+import Scene from "../scenes/scene.model.js"; 
 
 export const saveEvent = async (req, res) => {
     try {
@@ -12,9 +12,8 @@ export const saveEvent = async (req, res) => {
             });
         }
 
-        // Verificar que el escenario exista
-        const escenaExists = await Escena.findById(data.idEscenario);
-        if (!escenaExists) {
+        const sceneExists = await Scene.findById(data.idEscenario);
+        if (!sceneExists) {
             return res.status(404).json({
                 success: false,
                 message: "El escenario asociado no existe"
@@ -31,6 +30,7 @@ export const saveEvent = async (req, res) => {
             message: "Evento creado exitosamente",
             event
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -58,6 +58,7 @@ export const getEvents = async (req, res) => {
             total,
             events
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -83,6 +84,7 @@ export const getEventById = async (req, res) => {
             success: true,
             event
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -96,9 +98,8 @@ export const getEventsByEscenario = async (req, res) => {
     try {
         const { idEscenario } = req.params;
 
-        // Verificar que el escenario exista
-        const escenaExists = await Escena.findById(idEscenario);
-        if (!escenaExists) {
+        const sceneExists = await Scene.findById(idEscenario);
+        if (!sceneExists) {
             return res.status(404).json({
                 success: false,
                 message: "El escenario proporcionado no existe"
@@ -111,6 +112,7 @@ export const getEventsByEscenario = async (req, res) => {
             success: true,
             events
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -130,8 +132,8 @@ export const updateEvent = async (req, res) => {
         }
 
         if (data.idEscenario) {
-            const escenaExists = await Escena.findById(data.idEscenario);
-            if (!escenaExists) {
+            const sceneExists = await Scene.findById(data.idEscenario);
+            if (!sceneExists) {
                 return res.status(404).json({
                     success: false,
                     message: "El escenario asociado no existe"
@@ -153,6 +155,7 @@ export const updateEvent = async (req, res) => {
             message: "Evento actualizado exitosamente",
             event
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -178,6 +181,7 @@ export const deleteEvent = async (req, res) => {
             success: true,
             message: "Evento eliminado exitosamente"
         });
+        
     } catch (err) {
         res.status(500).json({
             success: false,

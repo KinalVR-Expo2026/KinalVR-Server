@@ -1,7 +1,7 @@
-import Escena from "./escene.model.js";
+import Scene from "./scene.model.js";
 import { Types } from "mongoose";
 
-export const saveEscena = async (req, res) => {
+export const createScene = async (req, res) => {
     try {
         const data = req.body;
 
@@ -12,51 +12,54 @@ export const saveEscena = async (req, res) => {
             });
         }
 
-        // Verificar que el subId no esté repetido
-        const existingEscena = await Escena.findOne({ subId: data.subId });
-        if (existingEscena) {
+        const existingScene = await Scene.findOne({ subId: data.subId });
+        if (existingScene) {
             return res.status(400).json({
                 success: false,
                 message: "El subId ya está en uso por otro escenario"
             });
         }
 
-        data.urlImagen = req.file.path;
+        if (req.file) {
+            data.urlImagen = req.file.path;
+        }
 
-        const escena = new Escena(data);
-        await escena.save();
+        const scene = new Scene(data);
+        await scene.save();
 
         res.status(201).json({
             success: true,
-            message: "Escenario guardado exitosamente",
-            escena
+            message: "Escenario creado exitosamente",
+            scene: scene
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: "Error al guardar el escenario",
+            message: "Error al crear el escenario",
             error: err.message
         });
     }
 };
 
-export const getEscenas = async (req, res) => {
+export const getScenes = async (req, res) => {
     try {
         const { limite = 10, desde = 0 } = req.query;
         const query = {};
 
-        const [total, escenas] = await Promise.all([
-            Escena.countDocuments(query),
-            Escena.find(query)
+        const [total, scenes] = await Promise.all([
+            Scene.countDocuments(query),
+            Scene.find(query)
                 .skip(Number(desde))
                 .limit(Number(limite))
         ]);
 
         res.status(200).json({
             success: true,
-            total,
-            escenas
+            total: total,
+            scenes: scenes
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -66,12 +69,12 @@ export const getEscenas = async (req, res) => {
     }
 };
 
-export const getEscenaById = async (req, res) => {
+export const getSceneById = async (req, res) => {
     try {
         const { id } = req.params;
-        const escena = await Escena.findById(id);
+        const scene = await Scene.findById(id);
 
-        if (!escena) {
+        if (!scene) {
             return res.status(404).json({
                 success: false,
                 message: "Escenario no encontrado"
@@ -80,8 +83,9 @@ export const getEscenaById = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            escena
+            scene: scene
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -91,32 +95,33 @@ export const getEscenaById = async (req, res) => {
     }
 };
 
-export const getEscenasBySubId = async (req, res) => {
+export const getSceneBySubId = async (req, res) => {
     try {
         const { subId } = req.params;
-        const escenas = await Escena.find({ subId });
+        const scene = await Scene.findOne({ subId });
 
-        if (escenas.length === 0) {
+        if (!scene) {
             return res.status(404).json({
                 success: false,
-                message: "No se encontraron escenarios para el subId proporcionado"
+                message: "Escenario no encontrado"
             });
         }
 
         res.status(200).json({
             success: true,
-            escenas
+            scene: scene
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: "Error al obtener los escenarios",
+            message: "Error al obtener el escenario",
             error: err.message
         });
     }
 };
 
-export const updateEscena = async (req, res) => {
+export const updateScene = async (req, res) => {
     try {
         const { id } = req.params;
         const data = req.body;
@@ -125,10 +130,9 @@ export const updateEscena = async (req, res) => {
             data.urlImagen = req.file.path;
         }
 
-        // Verificar que el nuevo subId no esté repetido si se está actualizando
         if (data.subId) {
-            const existingEscena = await Escena.findOne({ subId: data.subId, _id: { $ne: new Types.ObjectId(id) } });
-            if (existingEscena) {
+            const existingScene = await Scene.findOne({ subId: data.subId, _id: { $ne: new Types.ObjectId(id) } });
+            if (existingScene) {
                 return res.status(400).json({
                     success: false,
                     message: "El subId ya está en uso por otro escenario"
@@ -136,9 +140,9 @@ export const updateEscena = async (req, res) => {
             }
         }
 
-        const escena = await Escena.findByIdAndUpdate(id, data, { new: true });
+        const scene = await Scene.findByIdAndUpdate(id, data, { new: true });
 
-        if (!escena) {
+        if (!scene) {
             return res.status(404).json({
                 success: false,
                 message: "Escenario no encontrado"
@@ -148,8 +152,9 @@ export const updateEscena = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Escenario actualizado exitosamente",
-            escena
+            scene: scene
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -159,12 +164,12 @@ export const updateEscena = async (req, res) => {
     }
 };
 
-export const deleteEscena = async (req, res) => {
+export const deleteScene = async (req, res) => {
     try {
         const { id } = req.params;
-        const escena = await Escena.findByIdAndDelete(id);
+        const scene = await Scene.findByIdAndDelete(id);
 
-        if (!escena) {
+        if (!scene) {
             return res.status(404).json({
                 success: false,
                 message: "Escenario no encontrado"
@@ -175,6 +180,7 @@ export const deleteEscena = async (req, res) => {
             success: true,
             message: "Escenario eliminado exitosamente"
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
