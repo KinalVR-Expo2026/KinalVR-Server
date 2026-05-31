@@ -1,0 +1,22 @@
+import { Schema, model } from 'mongoose';
+
+const eventSchema = new Schema({
+    urlImagen: {
+        type: String,
+        required: [true, 'La URL de la imagen del evento es obligatoria']
+    },
+    descripcion: {
+        type: String,
+        required: [true, 'La descripción del evento es obligatoria']
+    },
+    idEscenario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Escena',
+        required: [true, 'El ID del escenario asociado es obligatorio']
+    }
+}, {
+    timestamps: true,
+    versionKey: false
+});
+
+export default model('Event', eventSchema);

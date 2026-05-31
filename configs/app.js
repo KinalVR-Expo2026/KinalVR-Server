@@ -8,6 +8,9 @@ import { dbConnection } from './db.js';
 import { corsOptions } from './cors-configuration.js';
 import { helmetConfiguration } from './helmet-configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
+import escenaRoutes from '../src/scenes/escene.routes.js';
+import eventRoutes from '../src/events/event.routes.js';
+import { parseMultipart } from '../middlewares/file-uploader.js';
 
 const BASE_PATH = '/kinal-vr/v1';
 
@@ -17,6 +20,19 @@ const middlewares = (app) => {
     app.use(cors(corsOptions));
     app.use(helmet(helmetConfiguration));
     app.use(morgan('dev'));
+    
+    // Global multipart/form-data parser for non-file-upload routes
+    app.use((req, res, next) => {
+        const contentType = req.headers['content-type'] || '';
+        if (contentType.includes('multipart/form-data')) {
+            const isFileUploadRoute = (req.method === 'POST' || req.method === 'PUT') &&
+                (req.path.includes('/scenes') || req.path.includes('/events'));
+            if (!isFileUploadRoute) {
+                return parseMultipart(req, res, next);
+            }
+        }
+        next();
+    });
 }
 
 const routes = (app) => {
@@ -27,6 +43,9 @@ const routes = (app) => {
             service: 'KinalVR Server'
         })
     })
+
+    app.use(`${BASE_PATH}/scenes`, escenaRoutes);
+    app.use(`${BASE_PATH}/events`, eventRoutes);
 
     app.use((req, res) => {
         res.status(404).json({

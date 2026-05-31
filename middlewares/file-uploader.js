@@ -66,7 +66,9 @@ const createCloudinaryUploader = (folder) => {
 }
 
 export const uploadFieldImage = createCloudinaryUploader(
-    process.env.CLOUDINARY_FOLDER || 'kinal_sports/fields'
+    process.env.CLOUDINARY_FOLDER || 'kinalvr/images'
 )
+
+export const parseMultipart = multer().none();
 
 export { cloudinary }
