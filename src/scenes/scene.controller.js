@@ -189,3 +189,55 @@ export const deleteScene = async (req, res) => {
         });
     }
 };
+
+export const addConnection = async (req, res) => {
+    try {
+        const { sourceSubId, targetSubId, position = "0 1 -3", rotation = "0 0 0" } = req.body;
+
+        if (sourceSubId === targetSubId) {
+            return res.status(400).json({
+                success: false,
+                message: "Un escenario no puede conectarse consigo mismo"
+            });
+        }
+
+        const sourceScene = await Scene.findOne({ subId: sourceSubId });
+        if (!sourceScene) {
+            return res.status(404).json({
+                success: false,
+                message: `El escenario de origen '${sourceSubId}' no existe`
+            });
+        }
+
+        const targetScene = await Scene.findOne({ subId: targetSubId });
+        if (!targetScene) {
+            return res.status(404).json({
+                success: false,
+                message: `El escenario de destino '${targetSubId}' no existe`
+            });
+        }
+
+        if (sourceScene.conexiones.some(c => c.targetSubId === targetSubId)) {
+            return res.status(400).json({
+                success: false,
+                message: `La conexión hacia '${targetSubId}' ya existe en el escenario '${sourceSubId}'`
+            });
+        }
+
+        sourceScene.conexiones.push({ targetSubId, position, rotation });
+        await sourceScene.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Conexión agregada exitosamente",
+            scene: sourceScene
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Error al agregar la conexión al escenario",
+            error: err.message
+        });
+    }
+};

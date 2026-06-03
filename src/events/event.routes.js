@@ -8,7 +8,7 @@ import {
     deleteEvent
 } from "./event.controller.js";
 import { uploadFieldImage } from "../../middlewares/file-uploader.js";
-import { createEventValidator, updateEventValidator } from "../../middlewares/event.validation.js";
+import { createEventValidator, updateEventValidator } from "../../middlewares/event-validators.js";
 
 const router = Router();
 

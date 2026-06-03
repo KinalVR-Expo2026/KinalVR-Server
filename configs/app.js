@@ -1,5 +1,5 @@
 'use strict';
-
+ 
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -11,16 +11,20 @@ import { errorHandler } from '../middlewares/handle-errors.js';
 import sceneRoutes from '../src/scenes/scene.routes.js';
 import eventRoutes from '../src/events/event.routes.js';
 import { parseMultipart } from '../middlewares/file-uploader.js';
-
+ 
 const BASE_PATH = '/kinal-vr/v1';
-
+ 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false, limit: '10mb' }));
     app.use(express.json({ limit: '10mb' }));
+    app.use((req, res, next) => {
+        res.setHeader('Access-Control-Allow-Private-Network', 'true');
+        next();
+    });
     app.use(cors(corsOptions));
     app.use(helmet(helmetConfiguration));
     app.use(morgan('dev'));
-    
+   
     // Global multipart/form-data parser for non-file-upload routes
     app.use((req, res, next) => {
         const contentType = req.headers['content-type'] || '';
@@ -34,7 +38,7 @@ const middlewares = (app) => {
         next();
     });
 }
-
+ 
 const routes = (app) => {
     app.get(`${BASE_PATH}/health`, (request, response) => {
         response.status(200).json({
@@ -43,10 +47,10 @@ const routes = (app) => {
             service: 'KinalVR Server'
         })
     })
-
+ 
     app.use(`${BASE_PATH}/scenes`, sceneRoutes);
     app.use(`${BASE_PATH}/events`, eventRoutes);
-
+ 
     app.use((req, res) => {
         res.status(404).json({
             success: false,
@@ -54,19 +58,19 @@ const routes = (app) => {
         })
     })
 }
-
+ 
 export const initServer = async () => {
     const app = express();
     const PORT = process.env.PORT;
     app.set('trust proxy', 1);
-
+ 
     try {
         await dbConnection();
         middlewares(app);
         routes(app);
-
+ 
         app.use(errorHandler);
-
+ 
         app.listen(PORT, () => {
             console.log(`KinalVR Server running on port ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/health`);
@@ -76,3 +80,4 @@ export const initServer = async () => {
         process.exit(1);
     }
 }
+ 
