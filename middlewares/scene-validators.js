@@ -41,3 +41,25 @@ export const updateSceneValidator = [
         }),
     checkValidators
 ];
+
+export const addConnectionValidator = [
+    body('sourceSubId')
+        .notEmpty()
+        .withMessage('El subId de origen (sourceSubId) es obligatorio')
+        .isString()
+        .withMessage('El subId debe ser un texto'),
+    body('targetSubId')
+        .notEmpty()
+        .withMessage('El subId de destino (targetSubId) es obligatorio')
+        .isString()
+        .withMessage('El subId debe ser un texto'),
+    body('position')
+        .optional()
+        .isString()
+        .withMessage('La posición debe ser un texto con formato de coordenadas "x y z"'),
+    body('rotation')
+        .optional()
+        .isString()
+        .withMessage('La rotación debe ser un texto con formato "x y z"'),
+    checkValidators
+];

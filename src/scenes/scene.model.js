@@ -1,5 +1,11 @@
 import { Schema, model } from 'mongoose';
 
+const conexionSchema = new Schema({
+    targetSubId: { type: String, required: true },
+    position: { type: String, default: "0 1 -3" },
+    rotation: { type: String, default: "0 0 0" }
+}, { _id: false });
+
 const escenaSchema = new Schema({
     urlImagen: {
         type: String,
@@ -10,10 +16,14 @@ const escenaSchema = new Schema({
         required: [true, 'La ubicación física es obligatoria']
     },
     subId: {
-        type: Number,
+        type: String,
         required: [true, 'El subId es obligatorio'],
         unique: true
     },
+    conexiones: {
+        type: [conexionSchema],
+        default: []
+    }
 }, {
     timestamps: true,
     versionKey: false

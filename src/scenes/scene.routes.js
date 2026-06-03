@@ -5,10 +5,15 @@ import {
     getSceneById, 
     getSceneBySubId,
     updateScene, 
-    deleteScene 
+    deleteScene,
+    addConnection
 } from "./scene.controller.js";
 import { uploadFieldImage } from "../../middlewares/file-uploader.js";
-import { createSceneValidator, updateSceneValidator } from "../../middlewares/scene-validators.js";
+import { 
+    createSceneValidator,
+    updateSceneValidator,
+    addConnectionValidator
+} from "../../middlewares/scene-validators.js";
 
 const router = Router();
 
@@ -44,6 +49,12 @@ router.put(
 router.delete(
     "/:id",
     deleteScene
+);
+
+router.post(
+    "/connection",
+    addConnectionValidator,
+    addConnection
 );
 
 export default router;
