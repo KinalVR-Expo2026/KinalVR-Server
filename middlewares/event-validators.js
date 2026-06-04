@@ -17,6 +17,14 @@ export const createEventValidator = [
         .withMessage('El idEscenario es obligatorio')
         .isMongoId()
         .withMessage('El idEscenario debe ser un ID de MongoDB válido'),
+    body('position')
+        .optional()
+        .isString()
+        .withMessage('La posición debe ser un texto con formato de coordenadas "x y z"'),
+    body('rotation')
+        .optional()
+        .isString()
+        .withMessage('La rotación debe ser un texto con formato "x y z"'),
     checkValidators
 ];
 
@@ -34,5 +42,13 @@ export const updateEventValidator = [
         .optional()
         .isMongoId()
         .withMessage('El idEscenario debe ser un ID de MongoDB válido'),
+    body('position')
+        .optional()
+        .isString()
+        .withMessage('La posición debe ser un texto con formato de coordenadas "x y z"'),
+    body('rotation')
+        .optional()
+        .isString()
+        .withMessage('La rotación debe ser un texto con formato "x y z"'),
     checkValidators
 ];
