@@ -11,8 +11,16 @@ const eventSchema = new Schema({
     },
     idEscenario: {
         type: Schema.Types.ObjectId,
-        ref: 'Escenario',
+        ref: 'Scene',
         required: [true, 'El ID del escenario asociado es obligatorio']
+    },
+    position: { 
+        type: String, 
+        default: "0 1 -3" 
+    },
+    rotation: { 
+        type: String, 
+        default: "0 0 0" 
     }
 }, {
     timestamps: true,

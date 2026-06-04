@@ -30,7 +30,7 @@ router.get(
 );
 
 router.get(
-    "/:idEscenario", 
+    "/escenario/:idEscenario",
     getEventsByEscenario
 );
 
