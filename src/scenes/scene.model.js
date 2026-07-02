@@ -18,14 +18,13 @@ const escenaSchema = new Schema({
     nivel: {
         type: String,
         enum: {
-            values: ['PRIMER-NIVEL', 'SEGUNDO-NIVEL', 'TERCER-NIVEL', 'CUARTO-NIVEL'],
+            values: ['PRIMER NIVEL', 'SEGUNDO NIVEL', 'TERCER NIVEL', 'CUARTO NIVEL'],
             message: '{VALUE} no es un nivel válido'
         },
         required: [true, 'El nivel del escenario es obligatorio']
     },
     posicion: {
-        type: [Number],
-        required: [true, 'La posición [x, y] es obligatoria']
+        type: [Number]
     },
     subId: {
         type: String,

@@ -6,13 +6,15 @@ import {
     getSceneBySubId,
     updateScene, 
     deleteScene,
-    addConnection
+    addConnection,
+    updatePositionAndLevel
 } from "./scene.controller.js";
 import { uploadFieldImage } from "../../middlewares/file-uploader.js";
 import { 
     createSceneValidator,
     updateSceneValidator,
-    addConnectionValidator
+    addConnectionValidator,
+    updatePosicionNivelValidator
 } from "../../middlewares/scene-validators.js";
 
 const router = Router();
@@ -55,6 +57,12 @@ router.post(
     "/connection",
     addConnectionValidator,
     addConnection
+);
+
+router.post(
+    "/posicion-nivel",
+    updatePosicionNivelValidator,
+    updatePositionAndLevel
 );
 
 export default router;

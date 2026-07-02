@@ -241,3 +241,34 @@ export const addConnection = async (req, res) => {
         });
     }
 };
+
+export const updatePositionAndLevel = async (req, res) => {
+    try {
+        const { subId, posicion, nivel } = req.body;
+
+        const scene = await Scene.findOne({ subId });
+        if (!scene) {
+            return res.status(404).json({
+                success: false,
+                message: `El escenario con subId '${subId}' no existe`
+            });
+        }
+
+        scene.posicion = posicion;
+        scene.nivel = nivel;
+        await scene.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Posición y nivel del escenario actualizados exitosamente",
+            scene
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Error al actualizar la posición y nivel del escenario",
+            error: err.message
+        });
+    }
+};
