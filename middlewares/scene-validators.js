@@ -6,6 +6,33 @@ export const createSceneValidator = [
     body('ubicacion')
         .notEmpty()
         .withMessage('La ubicación es obligatoria'),
+    body('nivel')
+        .notEmpty()
+        .withMessage('El nivel del escenario es obligatorio')
+        .isIn(['PRIMER-NIVEL', 'SEGUNDO-NIVEL', 'TERCER-NIVEL', 'CUARTO-NIVEL'])
+        .withMessage('El nivel debe ser PRIMER-NIVEL, SEGUNDO-NIVEL, TERCER-NIVEL o CUARTO-NIVEL'),
+    body('posicion')
+        .notEmpty()
+        .withMessage('La posición es obligatoria')
+        .customSanitizer((value) => {
+            if (typeof value === 'string') {
+                try {
+                    const parsed = JSON.parse(value);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    return value.split(',').map(num => parseFloat(num.trim()));
+                }
+            }
+            return value;
+        })
+        .isArray({ min: 2, max: 2 })
+        .withMessage('La posición debe ser un array con exactamente 2 elementos [x, y]')
+        .custom((value) => {
+            if (!value.every(num => typeof num === 'number' && !isNaN(num))) {
+                throw new Error('Los elementos de la posición deben ser números');
+            }
+            return true;
+        }),
     body('subId')
         .notEmpty()
         .withMessage('El subId es obligatorio')
@@ -28,6 +55,31 @@ export const updateSceneValidator = [
         .optional()
         .notEmpty()
         .withMessage('La ubicación no puede estar vacía'),
+    body('nivel')
+        .optional()
+        .isIn(['PRIMER-NIVEL', 'SEGUNDO-NIVEL', 'TERCER-NIVEL', 'CUARTO-NIVEL'])
+        .withMessage('El nivel debe ser PRIMER-NIVEL, SEGUNDO-NIVEL, TERCER-NIVEL o CUARTO-NIVEL'),
+    body('posicion')
+        .optional()
+        .customSanitizer((value) => {
+            if (typeof value === 'string') {
+                try {
+                    const parsed = JSON.parse(value);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    return value.split(',').map(num => parseFloat(num.trim()));
+                }
+            }
+            return value;
+        })
+        .isArray({ min: 2, max: 2 })
+        .withMessage('La posición debe ser un array con exactamente 2 elementos [x, y]')
+        .custom((value) => {
+            if (!value.every(num => typeof num === 'number' && !isNaN(num))) {
+                throw new Error('Los elementos de la posición deben ser números');
+            }
+            return true;
+        }),
     body('subId')
         .optional()
         .notEmpty()
