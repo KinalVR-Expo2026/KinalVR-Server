@@ -26,6 +26,10 @@ const escenaSchema = new Schema({
     posicion: {
         type: [Number]
     },
+    coordinacionAngulo: {
+        type: Number,
+        default: 0
+    },
     subId: {
         type: String,
         required: [true, 'El subId es obligatorio'],
