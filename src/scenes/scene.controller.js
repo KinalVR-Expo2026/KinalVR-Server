@@ -42,16 +42,19 @@ export const createScene = async (req, res) => {
     }
 };
 
+const MAX_LIMITE = 1000;
+
 export const getScenes = async (req, res) => {
     try {
-        const { limite = 10, desde = 0 } = req.query;
+        const limite = Math.min(Math.max(parseInt(req.query.limite, 10) || 10, 1), MAX_LIMITE);
+        const desde = Math.max(parseInt(req.query.desde, 10) || 0, 0);
         const query = {};
 
         const [total, scenes] = await Promise.all([
             Scene.countDocuments(query),
             Scene.find(query)
-                .skip(Number(desde))
-                .limit(Number(limite))
+                .skip(desde)
+                .limit(limite)
         ]);
 
         res.status(200).json({
@@ -192,14 +195,9 @@ export const deleteScene = async (req, res) => {
 
 export const addConnection = async (req, res) => {
     try {
+        // La validación de auto-conexión (sourceSubId === targetSubId) vive en
+        // addConnectionValidator (scene-validators.js), corre antes de llegar aquí.
         const { sourceSubId, targetSubId, position = "0 1 -3", rotation = "0 0 0" } = req.body;
-
-        if (sourceSubId === targetSubId) {
-            return res.status(400).json({
-                success: false,
-                message: "Un escenario no puede conectarse consigo mismo"
-            });
-        }
 
         const sourceScene = await Scene.findOne({ subId: sourceSubId });
         if (!sourceScene) {
