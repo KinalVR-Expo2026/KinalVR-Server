@@ -244,7 +244,7 @@ export const addConnection = async (req, res) => {
 
 export const updatePositionAndLevel = async (req, res) => {
     try {
-        const { subId, posicion, nivel } = req.body;
+        const { subId, posicion, nivel, coordinacionAngulo } = req.body;
 
         const scene = await Scene.findOne({ subId });
         if (!scene) {
@@ -256,6 +256,7 @@ export const updatePositionAndLevel = async (req, res) => {
 
         scene.posicion = posicion;
         scene.nivel = nivel;
+        scene.coordinacionAngulo = coordinacionAngulo;
         await scene.save();
 
         res.status(200).json({
