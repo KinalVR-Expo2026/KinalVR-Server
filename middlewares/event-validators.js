@@ -4,8 +4,8 @@ import { checkValidators } from "./checkValidators.js";
 export const createEventValidator = [
     body('urlImagen')
         .custom((value, { req }) => {
-            if (!req.file) {
-                throw new Error('La imagen del evento es obligatoria');
+            if (!req.file && !req.body.urlImagen) {
+                throw new Error('La imagen o el link de Cloudinary del evento es obligatorio');
             }
             return true;
         }),
