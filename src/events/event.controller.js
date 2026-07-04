@@ -5,10 +5,10 @@ export const saveEvent = async (req, res) => {
     try {
         const data = req.body;
 
-        if (!req.file) {
+        if (!req.file && !data.urlImagen) {
             return res.status(400).json({
                 success: false,
-                message: "La imagen del evento es obligatoria"
+                message: "La imagen o el link de Cloudinary del evento es obligatorio"
             });
         }
 
@@ -20,7 +20,9 @@ export const saveEvent = async (req, res) => {
             });
         }
 
-        data.urlImagen = req.file.path;
+        if (req.file) {
+            data.urlImagen = req.file.path;
+        }
 
         const event = new Event(data);
         await event.save();
