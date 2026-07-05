@@ -6,13 +6,15 @@ import {
     getSceneBySubId,
     updateScene, 
     deleteScene,
-    addConnection
+    addConnection,
+    updatePositionAndLevel
 } from "./scene.controller.js";
 import { uploadFieldImage } from "../../middlewares/file-uploader.js";
 import { 
     createSceneValidator,
     updateSceneValidator,
-    addConnectionValidator
+    addConnectionValidator,
+    updatePosicionNivelValidator
 } from "../../middlewares/scene-validators.js";
 
 const router = Router();
@@ -29,14 +31,29 @@ router.get(
     getScenes
 );
 
-router.get(
-    "/:id",
-    getSceneById
-);
-
+// Rutas específicas antes que "/:id" — de lo contrario Express nunca las alcanza
+// porque "/:id" hace match con cualquier segmento (ver bug corregido: GET /sub/:subId
+// quedaba inalcanzable al estar definida después de GET /:id).
 router.get(
     "/sub/:subId",
     getSceneBySubId
+);
+
+router.post(
+    "/connection",
+    addConnectionValidator,
+    addConnection
+);
+
+router.post(
+    "/posicion-nivel",
+    updatePosicionNivelValidator,
+    updatePositionAndLevel
+);
+
+router.get(
+    "/:id",
+    getSceneById
 );
 
 router.put(
@@ -49,12 +66,6 @@ router.put(
 router.delete(
     "/:id",
     deleteScene
-);
-
-router.post(
-    "/connection",
-    addConnectionValidator,
-    addConnection
 );
 
 export default router;
