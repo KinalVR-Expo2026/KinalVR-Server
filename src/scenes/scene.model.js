@@ -1,9 +1,26 @@
 import { Schema, model } from 'mongoose';
+import { POSITION_BOUND, ROTATION_BOUND, isWithinCoordinateBounds } from '../../middlewares/coordinate-validator.js';
 
+// Los mismos límites se validan en middlewares/scene-validators.js (addConnectionValidator)
+// y en el cliente (AdminOverlay.jsx) — mantener sincronizado si se cambian.
 const conexionSchema = new Schema({
     targetSubId: { type: String, required: true },
-    position: { type: String, default: "0 1 -3" },
-    rotation: { type: String, default: "0 0 0" }
+    position: {
+        type: String,
+        default: "0 1 -3",
+        validate: {
+            validator: (value) => isWithinCoordinateBounds(value, POSITION_BOUND),
+            message: (props) => `${props.value} no es una posición válida (formato "x y z", máximo ±${POSITION_BOUND} por eje)`
+        }
+    },
+    rotation: {
+        type: String,
+        default: "0 0 0",
+        validate: {
+            validator: (value) => isWithinCoordinateBounds(value, ROTATION_BOUND),
+            message: (props) => `${props.value} no es una rotación válida (formato "x y z", máximo ±${ROTATION_BOUND} por eje)`
+        }
+    }
 }, { _id: false });
 
 const escenaSchema = new Schema({
